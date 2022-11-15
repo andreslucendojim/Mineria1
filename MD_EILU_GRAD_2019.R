@@ -2,7 +2,7 @@ library(haven) #Import dta
 library(ggplot2) #Better graphs
 library(paletteer) #Color palette
 library(ggpubr) #Combine plots
-data <- read_dta("Desktop/MineriaDatos/Graduados/EILU_GRADUADOS/STATA/EILU_GRAD_2019.dta") #Import dataset
+data <- read_dta("~/Desktop/MineriaDatos/Mineria1/EILU_GRAD_2019.dta") #Import dataset
 View(data)
 
 
@@ -34,7 +34,7 @@ hm <- ggplot(data, aes(x = ESTUDIOS_MADRE)) + geom_bar(fill = paletteer_c("ggthe
   ggtitle("Histograma estudios de la madre") + xlab("Estudios madre") + ylab("Cantidad")
 
 #Combined histograms
-histo <- ggarrange(hp, hm, ncol = 1, nrow = 2)
+histo <- ggarrange(hf, hm, ncol = 1, nrow = 2)
 histo
 
 #Scolarship -> EST_B2_2
@@ -46,7 +46,6 @@ scolarship <- data$EST_B2_2 #Create a vector
 scolarship <- as.numeric(scolarship) #Change to numerico form
 scolarship <- scolarship[!is.na(scolarship)] #Remove NA
 scolarship <- scolarship[!scolarship == 9] #Remove 9 value
-scolarship
 hist(scolarship)
 
 ggplot() + aes(scolarship)+ geom_bar(colour="black", fill=paletteer_c("ggthemes::Classic Area Green", 2))
