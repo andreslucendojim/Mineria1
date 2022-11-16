@@ -3,7 +3,7 @@ library(ggplot2) #Better graphs
 library(paletteer) #Color palette
 library(ggpubr) #Combine plots
 data <- read_dta("~/Desktop/MineriaDatos/Mineria1/EILU_GRAD_2019.dta") #Import dataset
-
+#pablo feo
 
 """
 ANÁLISIS DESCRIPTIVO
