@@ -2,6 +2,7 @@ library(haven) #Import dta
 library(ggplot2) #Better graphs
 library(paletteer) #Color palette
 library(ggpubr) #Combine plots
+library(corrplot)
 data <- read_dta("~/Desktop/MineriaDatos/Mineria1/EILU_GRAD_2019.dta") #Import dataset
 
 """
@@ -22,19 +23,36 @@ ANÁLISIS DESCRIPTIVO
 """
 
 #Father histogram -> ESUDIOS_PADRE, ESTUDIOS_MADRE
-hf <- ggplot(data, aes(x = ESTUDIOS_PADRE)) + geom_bar(fill = paletteer_c("ggthemes::Blue", 9), 
+father <- data$ESTUDIOS_PADRE #Create a vector
+father <- as.numeric(father) #Change to numerico form
+father <- father[!is.na(father)] #Remove NA
+father <- father[!father == 9] #Remove 9 value
+
+
+hf <- ggplot() + aes(x = father)+ geom_bar(fill = paletteer_c("ggthemes::Blue", 8), 
                                                   color = "black") + 
   ggtitle("Histograma estudios del padre") + xlab("Estudios padre") + ylab("Cantidad")
 
+hf
+
 #Mother histogram
-hm <- ggplot(data, aes(x = ESTUDIOS_MADRE)) + geom_bar(fill = paletteer_c("ggthemes::Green", 9), 
+
+mother <- data$ESTUDIOS_MADRE #Create a vector
+mother <- as.numeric(mother) #Change to numerico form
+mother <- mother[!is.na(mother)] #Remove NA
+mother <- mother[!mother == 9] #Remove 9 value
+
+hm <- ggplot() + aes(x = mother)  + geom_bar(fill = paletteer_c("ggthemes::Green", 8), 
                                                   color = "black") + 
   ggtitle("Histograma estudios de la madre") + xlab("Estudios madre") + ylab("Cantidad")
+hm
 
 #Combined histograms
 histo <- ggarrange(hf, hm, ncol = 1, nrow = 2)
 histo
 
+summary(father)
+summary(mother)
 #Scolarship -> EST_B2_2
 """
 1 <- Si
@@ -42,12 +60,11 @@ histo
 """
 scolarship <- data$EST_B2_2 #Create a vector
 scolarship <- as.numeric(scolarship) #Change to numerico form
-scolarship <- scolarship[!is.na(scolarship)] #Remove NA
 scolarship <- scolarship[!scolarship == 9] #Remove 9 value
 hist(scolarship)
 
 ggplot() + aes(scolarship)+ geom_bar(colour="black", fill=paletteer_c("ggthemes::Classic Area Green", 2))
-
+summary(scolarship)
 #Erasmus -> EST_M1
 """
 1 <- Si
@@ -55,12 +72,11 @@ ggplot() + aes(scolarship)+ geom_bar(colour="black", fill=paletteer_c("ggthemes:
 """
 erasmus <- data$EST_M1 #Create a vector
 erasmus <- as.numeric(erasmus) #Change to numerico form
-erasmus <- erasmus[!is.na(erasmus)] #Remove NA
 erasmus <- erasmus[!erasmus == 9] #Remove 9 value
 erasmus
 
 ggplot() + aes(erasmus)+ geom_bar(colour="black", fill=paletteer_c("ggthemes::Classic Area Red", 2))
-
+summary(erasmus)
 #Master -> EST_B11_2
 """
 1 <- Si
@@ -68,13 +84,20 @@ ggplot() + aes(erasmus)+ geom_bar(colour="black", fill=paletteer_c("ggthemes::Cl
 """
 master <- data$EST_B11_2
 ggplot() + aes(master)+ geom_bar(colour="black", fill=paletteer_c("ggthemes::Purple", 2))
-
+summary(master)
 #Doctor -> EST_B11_3
 """
 1 <- Si
 2 <- No
 """
-doctor <- data$EST_B11_3
+doctor <- as.numeric(data$EST_B11_3)
 ggplot() + aes(doctor)+ geom_bar(colour="black", fill=paletteer_c("ggthemes::Gray", 2))
 
+summary(as.numeric(doctor))
 
+
+#Correlación
+
+cor <- data.frame(father, mother, scolarship, erasmus, master, doctor)
+
+corrplot(cor(cor))
