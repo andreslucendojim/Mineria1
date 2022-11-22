@@ -3,11 +3,14 @@ library(ggplot2) #Better graphs
 library(paletteer) #Color palette
 library(ggpubr) #Combine plots
 library(corrplot)
+
 data <- read_dta("~/Desktop/MineriaDatos/Mineria1/EILU_GRAD_2019.dta") #Import dataset
+data_na <- na.omit(read.csv("~/Desktop/MineriaDatos/Mineria1/graduados.csv", sep = ";"))
 
 """
 ANÁLISIS DESCRIPTIVO
 """
+
 #Father - Mother studies
 
 """
@@ -29,7 +32,7 @@ father <- father[!is.na(father)] #Remove NA
 father <- father[!father == 9] #Remove 9 value
 
 
-hf <- ggplot() + aes(x = father)+ geom_bar(fill = paletteer_c("ggthemes::Blue", 8), 
+hf <- ggplot() + aes(x = father) + geom_bar(fill = paletteer_c("ggthemes::Blue", 8), 
                                                   color = "black") + 
   ggtitle("Histograma estudios del padre") + xlab("Estudios padre") + ylab("Cantidad")
 
@@ -53,7 +56,9 @@ histo
 
 summary(father)
 summary(mother)
+
 #Scolarship -> EST_B2_2
+
 """
 1 <- Si
 2 <- No
@@ -61,10 +66,10 @@ summary(mother)
 scolarship <- data$EST_B2_2 #Create a vector
 scolarship <- as.numeric(scolarship) #Change to numerico form
 scolarship <- scolarship[!scolarship == 9] #Remove 9 value
-hist(scolarship)
 
 ggplot() + aes(scolarship)+ geom_bar(colour="black", fill=paletteer_c("ggthemes::Classic Area Green", 2))
 summary(scolarship)
+
 #Erasmus -> EST_M1
 """
 1 <- Si
@@ -73,10 +78,11 @@ summary(scolarship)
 erasmus <- data$EST_M1 #Create a vector
 erasmus <- as.numeric(erasmus) #Change to numerico form
 erasmus <- erasmus[!erasmus == 9] #Remove 9 value
-erasmus
+
 
 ggplot() + aes(erasmus)+ geom_bar(colour="black", fill=paletteer_c("ggthemes::Classic Area Red", 2))
 summary(erasmus)
+
 #Master -> EST_B11_2
 """
 1 <- Si
@@ -98,6 +104,17 @@ summary(as.numeric(doctor))
 
 #Correlación
 
-cor <- data.frame(father, mother, scolarship, erasmus, master, doctor)
+father_na <- data_na$ESTUDIOS_PADRE
+mother_na <- data_na$ESTUDIOS_MADRE
+scolarship_na <- data_na$EST_B11_2
+erasmus_na <- data_na$EST_M1
+master_na <- data_na$EST_B11_2
+doctor_na <- data_na$EST_B11_3
 
-corrplot(cor(cor))
+cor <- data.frame(as.numeric(data_na$ESTUDIOS_PADRE), as.numeric(data_na$ESTUDIOS_PADRE), 
+                  as.numeric(data_na$EST_B2_2), as.numeric(data_na$EST_M1), 
+                  as.numeric(data_na$EST_B11_2), as.numeric(data_na$EST_B11_3))
+colnames(cor) <- c("Estudios padre", "Estudios Madre", "Beca de Excelencia", 
+                   "Movilidad", "Master", "Doctorado")
+
+corrplot(cor(cor), type = "upper")
